@@ -81,7 +81,7 @@ module RailsAdminImport
           end
 
           text = File.read(params[:file].tempfile)
-          clean = text.force_encoding('BINARY').encode('UTF-8', :undef => :replace, :replace => '').gsub(/\n$/, '')
+          clean = text.encode('UTF-8', :undef => :replace, :replace => '').gsub(/\n$/, '')
           file_check = CSV.new(clean)
 
           if file_check.readlines.size > RailsAdminImport.config.line_item_limit
@@ -162,7 +162,7 @@ module RailsAdminImport
         
         # model#where(update => value).first is more ORM compatible (works with Mongoid)
         if update.present? && (item = self.send(:where, update => row[map[update]]).first)
-          item.assign_attributes new_attrs.except(update.to_sym), :as => RailsAdmin.config.attr_accessible_role
+          item.assign_attributes new_attrs.except(update.to_sym) #, :as => RailsAdmin.config.attr_accessible_role
           item.save
         else
           item = self.new(new_attrs)
