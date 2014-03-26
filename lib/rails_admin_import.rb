@@ -38,6 +38,8 @@ module RailsAdmin
           Proc.new do
             @response = {}
 
+            @abstract_model.model.include RailsAdminImport::Import
+
             if request.post?
               results = @abstract_model.model.run_import(params)
               @response[:notice] = results[:success].join("<br />").html_safe if results[:success].any?
